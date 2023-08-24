@@ -1,0 +1,71 @@
+version: "3.9"
+services:
+  mongo_node_1:
+    container_name: mongo_node_1
+    hostname: mongo_node_1
+    image: "mongo:6.0"
+    expose:
+      - "27017"
+    volumes:
+      - ${PWD}/data/node_1:/data/db
+      - ${PWD}/config:/data/config
+    restart: always
+    entrypoint: ["/usr/bin/mongod", "--config", "/data/config/cluster.conf"]
+    networks:
+      mongo-network:
+        ipv4_address: 170.17.5.5
+    # extra_hosts:
+    #   - "localhost:(YOUR MACHINE/SERVER IP)"
+    environment:
+      MONGO_INITDB_ROOT_USERNAME: mdb_admin
+      MONGO_INITDB_ROOT_PASSWORD: mdb_pass
+
+  mongo_node_2:
+    container_name: mongo_node_2
+    hostname: mongo_node_2
+    image: "mongo:6.0"
+    expose:
+      - "27017"
+    volumes:
+      - ${PWD}/data/node_2:/data/db
+      - ${PWD}/config:/data/config
+    restart: always
+    entrypoint: ["/usr/bin/mongod", "--config", "/data/config/cluster.conf"]
+    networks:
+      mongo-network:
+        ipv4_address: 170.17.5.6
+    # extra_hosts:
+    #   - "localhost:(YOUR MACHINE/SERVER IP)"
+    environment:
+      MONGO_INITDB_ROOT_USERNAME: mdb_admin
+      MONGO_INITDB_ROOT_PASSWORD: mdb_pass
+
+  mongo_node_arbiter:
+    container_name: mongo_node_arbiter
+    hostname: mongo_node_arbiter
+    image: "mongo:6.0"
+    expose:
+      - "27017"
+    volumes:
+      - ${PWD}/data/node_arbiter:/data/db
+      - ${PWD}/config:/data/config
+    restart: always
+    entrypoint: ["/usr/bin/mongod", "--config", "/data/config/cluster.conf"]
+    networks:
+      mongo-network:
+        ipv4_address: 170.17.5.7
+    # extra_hosts:
+    #   - "localhost:(YOUR MACHINE/SERVER IP)"
+    environment:
+      MONGO_INITDB_ROOT_USERNAME: mdb_admin
+      MONGO_INITDB_ROOT_PASSWORD: mdb_pass
+
+networks:
+  mongo-network:
+    name: mongo-network
+    ipam: 
+      driver: default
+      config:
+        - subnet: 170.17.0.0/16
+          ip_range: 170.17.0.0/16
+          gateway: 170.17.5.254
