@@ -1,5 +1,7 @@
 .PHONY: up
 up:
+	chmod 400 config/mongo-replication.key
+	sudo chown 999:999 mongo-replication.key
 	docker compose up -d
 
 .PHONY: init
